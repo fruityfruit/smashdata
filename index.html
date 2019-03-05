@@ -24,6 +24,7 @@
         <div class="card-body">
           <h5 class="card-title">Click a character to shrink the tree.</h5>
           <p class="card-text">Hover over a character to see the player name.</p>
+          <p class="card-text">You can use the dropdown menu to highlight players in the bracket.</p>
         </div>
       </div>
     </div>
@@ -32,23 +33,10 @@
 
 <body>
 <!-- load the d3.js library -->
-<script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="js/d3.min.js"></script>
 <!-- Custom JS -->
 
-<div class="container">
-  <div class="row">
-      <div class="col-md-6 col-md-offset-6">
-    <div class="input-group mb-3">
-    <input type="text" id="searchField" class="form-control"  name="fname">
-    </div>
-    <button type="button" onclick="search()" class="btn btn-info">Search</button>
-    <button type="button" onclick="clearResult()" class="btn btn-secondary">Clear</button>
-    <div id="searching"></div>
-    </div>
-  </div>
-</div>
-<div class="container">
+  <div class="container">
   <div class="row">
       <div class="col-md-6 col-md-offset-6">
         <div id="search-area"></div>

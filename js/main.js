@@ -1,8 +1,8 @@
 var theData =
     [
-      {"name": "Genesis 6",   "parent": "", "winner": "MkLeo", "image": "img/lucina.png"},
-      {"name": "GF Winners",  "parent": "Genesis 6", "winner": "VoiD", "image": "img/pichu.png"},
-      {"name": "GF Losers",  "parent": "Genesis 6", "winner": "MkLeo", "image": "img/lucina.png"},
+      {"name": "*",   "parent": "", "winner": "MkLeo", "image": "img/lucina.png"},
+      {"name": "GF Winners",  "parent": "*", "winner": "VoiD", "image": "img/pichu.png"},
+      {"name": "GF Losers",  "parent": "*", "winner": "MkLeo", "image": "img/lucina.png"},
       {"name": "WF P1",  "parent": "GF Winners", "winner": "VoiD", "image": "img/pichu.png"},
       {"name": "WF P2",  "parent": "GF Winners", "winner": "Samsora", "image": "img/peach.png"},
       {"name": "LF P1",  "parent": "GF Losers", "winner": "MkLeo", "image": "img/lucina.png"},
@@ -106,7 +106,10 @@ var select = d3.select("#search-area")
           doReset();
           return;
     }
-    var find = flatten(root).find(function(d) {
+    var filtered = flatten(root).filter(function(d){
+      return d.data.data.winner == select;
+    });
+    /*var find = flatten(root).find(function(d) {
       if (d.data.data.winner == select)
         return true;
     });
@@ -116,7 +119,16 @@ var select = d3.select("#search-area")
       find = find.parent;
     }
 
-    update(find)
+    update(find)*/
+    doReset()
+    var find = filtered.forEach(function(d){
+      while(d.parent)
+      {
+        d.color = "red";
+        d = d.parent;
+      }
+      update(root)
+    });
   });
 
 
