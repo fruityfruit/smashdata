@@ -75,6 +75,8 @@ var theData =
       {"name": "MkLeo GF",  "parent": "Genesis 6", "winner": "MkLeo"},
       {"name": "Void WF",  "parent": "Void GF", "winner": "Void"},
       {"name": "Samsora WF",  "parent": "Void GF", "winner": "Void"},
+      {"name": "MkLeo LF",  "parent": "MkLeo GF", "winner": "MkLeo"},
+      {"name": "Samsora LF",  "parent": "MkLeo GF", "winner": "MkLeo"},
     ]
 
 var treeData = d3.stratify()
@@ -127,12 +129,12 @@ var i = 0,
     root;
 
 // declares a tree layout and assigns the size
-var treemap = d3.tree().size([height, width]);
+var treemap = d3.tree().size([width, height]);
 
 // Assigns parent, children, height, depth
 root = d3.hierarchy(treeData, function(d) { return d.children; });
-root.x0 = height / 2;
-root.y0 = 0;
+root.x0 = 0;
+root.y0 = width/2;
 
 // Collapse after the second lGenesis 6l
 //root.children.forEach(collapse);
@@ -170,7 +172,7 @@ function update(source) {
   var nodeEnter = node.enter().append('g')
       .attr('class', 'node')
       .attr("transform", function(d) {
-        return "translate(" + source.y0 + "," + source.x0 + ")";
+        return "translate(" + source.x0 + "," + source.y0 + ")";
     })
     .on('click', click)
     .on("mouseover", function(d) {
@@ -215,7 +217,7 @@ function update(source) {
   nodeUpdate.transition()
     .duration(duration)
     .attr("transform", function(d) {
-        return "translate(" + d.y + "," + d.x + ")";
+        return "translate(" + d.x + "," + d.y + ")";
      });
 
   // Update the node attributes and style
@@ -231,7 +233,7 @@ function update(source) {
   var nodeExit = node.exit().transition()
       .duration(duration)
       .attr("transform", function(d) {
-          return "translate(" + source.y + "," + source.x + ")";
+          return "translate(" + source.x + "," + source.y + ")";
       })
       .remove();
 
@@ -253,7 +255,7 @@ function update(source) {
   var linkEnter = link.enter().insert('path', "g")
       .attr("class", "link")
       .attr('d', function(d){
-        var o = {x: source.x0, y: source.y0}
+        var o = {y: source.y0, x: source.x0}
         return diagonal(o, o)
       });
 
@@ -283,10 +285,10 @@ function update(source) {
   // Creates a curved (diagonal) path from parent to the child nodes
   function diagonal(s, d) {
 
-    path = `M ${s.y} ${s.x}
-            C ${(s.y + d.y) / 2} ${s.x},
-              ${(s.y + d.y) / 2} ${d.x},
-              ${d.y} ${d.x}`
+    path = `M ${s.x} ${s.y}
+            C ${(s.x + d.x) / 2} ${s.y},
+              ${(s.x + d.x) / 2} ${d.y},
+              ${d.x} ${d.y}`
 
     return path
   }
