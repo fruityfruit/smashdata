@@ -63,21 +63,18 @@
     </div>
 </div>
 <body>
+
 <!-- load the d3.js library -->
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <!-- Custom JS -->
 <script>
 var theData =
     [
-      {"name": "Eve",   "parent": ""},
-      {"name": "Cain",  "parent": "Eve"},
-      {"name": "Seth",  "parent": "Eve"},
-      {"name": "Enos",  "parent": "Seth"},
-      {"name": "Noam",  "parent": "Seth"},
-      {"name": "Abel",  "parent": "Eve"},
-      {"name": "Awan",  "parent": "Eve"},
-      {"name": "Enoch", "parent": "Awan"},
-      {"name": "Azura", "parent": "Eve"}
+      {"name": "Genesis 6",   "parent": "", "winner": "MkLeo"},
+      {"name": "Void GF",  "parent": "Genesis 6", "winner": "MkLeo"},
+      {"name": "MkLeo GF",  "parent": "Genesis 6", "winner": "MkLeo"},
+      {"name": "Void WF",  "parent": "Void GF", "winner": "Void"},
+      {"name": "Samsora WF",  "parent": "Void GF", "winner": "Void"},
     ]
 
 var treeData = d3.stratify()
@@ -87,7 +84,7 @@ var treeData = d3.stratify()
 
 var treeDataOLD =
   {
-    "name": "Top Level",
+    "name": "Top LGenesis 6l",
     "children": [
       {
         "name": "Tweek",
@@ -137,7 +134,7 @@ root = d3.hierarchy(treeData, function(d) { return d.children; });
 root.x0 = height / 2;
 root.y0 = 0;
 
-// Collapse after the second level
+// Collapse after the second lGenesis 6l
 //root.children.forEach(collapse);
 
 update(root);
@@ -183,7 +180,7 @@ function update(source) {
          .classed('info', true)
          .attr('x', 20)
          .attr('y', 10)
-         .text(function(d) {return "Winner " + d.data.data.name;});
+         .text(function(d) {return "Winner " + d.data.data.winner;});
   })
   .on("mouseout", function() {
       // Remove the info text on mouse out.
