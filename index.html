@@ -71,12 +71,12 @@
 var theData =
     [
       {"name": "Genesis 6",   "parent": "", "winner": "MkLeo", "image": "img/lucina.png"},
-      {"name": "Void GF",  "parent": "Genesis 6", "winner": "MkLeo", "image": "img/pichu.png"},
-      {"name": "MkLeo GF",  "parent": "Genesis 6", "winner": "MkLeo", "image": "img/lucina.png"},
-      {"name": "Void WF",  "parent": "Void GF", "winner": "Void", "image": "img/pichu.png"},
-      {"name": "Samsora WF",  "parent": "Void GF", "winner": "Void", "image": "img/peach.png"},
-      {"name": "MkLeo LF",  "parent": "MkLeo GF", "winner": "MkLeo", "image": "img/lucina.png"},
-      {"name": "Samsora LF",  "parent": "MkLeo GF", "winner": "MkLeo", "image": "img/peach.png"},
+      {"name": "GF Winners",  "parent": "Genesis 6", "winner": "Void", "image": "img/pichu.png"},
+      {"name": "GF Losers",  "parent": "Genesis 6", "winner": "MkLeo", "image": "img/lucina.png"},
+      {"name": "WF P1",  "parent": "GF Winners", "winner": "Void", "image": "img/pichu.png"},
+      {"name": "WF P2",  "parent": "GF Winners", "winner": "Samsora", "image": "img/peach.png"},
+      {"name": "LF P1",  "parent": "GF Losers", "winner": "MkLeo", "image": "img/lucina.png"},
+      {"name": "LF P2",  "parent": "GF Losers", "winner": "Samsora", "image": "img/peach.png"},
     ]
 
 var treeData = d3.stratify()
@@ -110,9 +110,9 @@ var treeDataOLD =
   };
 
 // Set the dimensions and margins of the diagram
-var margin = {top: 20, right: 90, bottom: 30, left: 90},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+var margin = {top: 20, right: 90, bottom: 30, left: 350},
+    width = 1060 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'
@@ -181,7 +181,7 @@ function update(source) {
       var info = g.append('text')
          .classed('info', true)
          .attr('x', 20)
-         .attr('y', 10)
+         .attr('y', 35)
          .text(function(d) {return "Winner " + d.data.data.winner;});
   })
   .on("mouseout", function() {
@@ -206,8 +206,9 @@ function update(source) {
   // Add labels for the nodes
   nodeEnter.append('text')
       .attr("dy", ".35em")
+      .attr("dx", 12)
       .attr("x", function(d) {
-          return d.children || d._children ? -13 : 13;
+          return d.children || d._children ? -35 : 10;
       })
       .attr("text-anchor", function(d) {
           return d.children || d._children ? "end" : "start";
