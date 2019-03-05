@@ -70,13 +70,13 @@
 <script>
 var theData =
     [
-      {"name": "Genesis 6",   "parent": "", "winner": "MkLeo"},
-      {"name": "Void GF",  "parent": "Genesis 6", "winner": "MkLeo"},
-      {"name": "MkLeo GF",  "parent": "Genesis 6", "winner": "MkLeo"},
-      {"name": "Void WF",  "parent": "Void GF", "winner": "Void"},
-      {"name": "Samsora WF",  "parent": "Void GF", "winner": "Void"},
-      {"name": "MkLeo LF",  "parent": "MkLeo GF", "winner": "MkLeo"},
-      {"name": "Samsora LF",  "parent": "MkLeo GF", "winner": "MkLeo"},
+      {"name": "Genesis 6",   "parent": "", "winner": "MkLeo", "image": "img/lucina.png"},
+      {"name": "Void GF",  "parent": "Genesis 6", "winner": "MkLeo", "image": "img/pichu.png"},
+      {"name": "MkLeo GF",  "parent": "Genesis 6", "winner": "MkLeo", "image": "img/lucina.png"},
+      {"name": "Void WF",  "parent": "Void GF", "winner": "Void", "image": "img/pichu.png"},
+      {"name": "Samsora WF",  "parent": "Void GF", "winner": "Void", "image": "img/peach.png"},
+      {"name": "MkLeo LF",  "parent": "MkLeo GF", "winner": "MkLeo", "image": "img/lucina.png"},
+      {"name": "Samsora LF",  "parent": "MkLeo GF", "winner": "MkLeo", "image": "img/peach.png"},
     ]
 
 var treeData = d3.stratify()
@@ -192,10 +192,16 @@ function update(source) {
   // Add Circle for the nodes
   nodeEnter.append('circle')
       .attr('class', 'node')
-      .attr('r', 1e-6)
+      .attr('r', 0.5)
       .style("fill", function(d) {
           return d._children ? "lightsteelblue" : "#fff";
       });
+      var images = nodeEnter.append("svg:image")
+            .attr("xlink:href",  function(d) { return d.data.data.image;})
+            .attr("x", function(d) { return -25;})
+            .attr("y", function(d) { return -25;})
+            .attr("height", 50)
+            .attr("width", 50);
 
   // Add labels for the nodes
   nodeEnter.append('text')
@@ -222,7 +228,7 @@ function update(source) {
 
   // Update the node attributes and style
   nodeUpdate.select('circle.node')
-    .attr('r', 10)
+    .attr('r', 0.5)
     .style("fill", function(d) {
         return d._children ? "lightsteelblue" : "#fff";
     })
