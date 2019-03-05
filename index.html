@@ -56,16 +56,59 @@
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+.found {
+  fill: #ff4136;
+  stroke: #ff4136;
+}
+ul.select2-results {
+ max-height: 100px;
+}
+    .select2-container,
+    .select2-drop,
+    .select2-search,
+    .select2-search input {
+      font: 10px sans-serif;
+}
+.search {
+  float: left;
+  font: 10px sans-serif;
+  width: 100%;
+}
+
 </style>
 <div class="row">
-    <div class="col-md-2 col-md-offset-5">
-        <h1>Smash Data: Genesis 6</h1>
+    <div class="col-md-6 col-md-offset-6">
+<h1>Genesis 6: Bracket <span class="badge badge-secondary">Tree</span></h1></div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-md-offset-6">
+      <div class="card">
+        <div class="card-header">
+          This tree shows smash tournament bracket information.
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Click a character to shrink the tree.</h5>
+          <p class="card-text">Hover over a character to see the player name.</p>
+        </div>
+      </div>
     </div>
 </div>
-<body>
 
+
+<body>
 <!-- load the d3.js library -->
 <script src="https://d3js.org/d3.v5.min.js"></script>
+<div style="overflow:hidden; font-size=11px;">
+  <input id="searchField" type="text" name="fname" style="float:left;">
+  <input type="button" value="search" onclick="search()" style="float:left; margin-left:5px;">
+  <div id="searching" style="float:left; margin-left:20px; margin-top:3px; color:#c9c9b5;width:200px;"></div>
+  <div id="clearResult" class="clearResult" onclick="clearResult()">Clear</div>
+</div>
 <!-- Custom JS -->
 <script>
 var theData =
@@ -103,31 +146,6 @@ var treeData = d3.stratify()
     .parentId(function(d) { return d.parent; })
     (theData);
 
-var treeDataOLD =
-  {
-    "name": "Top LGenesis 6l",
-    "children": [
-      {
-        "name": "Tweek",
-        "children": [
-          {       "name": "Nairo",
-                  "children": [
-                    { "name": "Son of A" },
-                  ]
-          },
-          { "name": "Daughter of A" }
-        ]
-      },
-      {
-        "name": "Nairo",
-        "children": [
-          { "name": "Son of A" },
-          { "name": "Daughter of A" }
-        ]
-      }
-    ]
-  };
-
 // Set the dimensions and margins of the diagram
 var margin = {top: 20, right: 90, bottom: 30, left: 0},
     width = 1560 - margin.left - margin.right,
@@ -155,9 +173,21 @@ root = d3.hierarchy(treeData, function(d) { return d.children; });
 root.x0 = 0;
 root.y0 = width/2;
 
+
 // Collapse after the second lGenesis 6l
 //root.children.forEach(collapse);
+root.marker = "i00";
 
+function collapse(d, index) {
+d.parent = this;
+d.marker = this.marker + generateMarker(index);
+  if (d.children) {
+    d._children = d.children;
+    d._children.forEach(collapse, d);
+    d.children = null;
+  }
+}
+root.children.forEach(collapse, root);
 update(root);
 
 // Collapse the node and all it's children
@@ -332,6 +362,68 @@ function update(source) {
   }
 }
 
+function addToScope(d) {
+  var marker = '#' + d.marker;
+
+  if (scope.indexOf(marker) >= 0) return;
+  scope.push(marker);
+  if (d.parent == null) return;
+  addToScope(d.parent);
+}
+
+function generateMarker(index) {
+  if (index > 9)
+    return '' + index;
+  return '0'+index;
+}
+
+function search () {
+  var text = document.getElementById('searchField').value.toUpperCase();
+  document.getElementById('searching').innerHTML = 'Searching: ' +text;
+
+  //reset
+  selected = [];
+  scope = [];
+  selection = '#a';
+  filtered = true;
+  root.children.forEach(searchChildren, text);
+  document.getElementById('searching').innerHTML = 'Found: ' +selected.length;
+}
+
+function clearResult() {
+  filtered = false;
+  selected = [];
+  scope = [];
+  selection = '#a';
+  root.children.forEach(clearNodes);
+  document.getElementById('searching').innerHTML = '';
+}
+
+function clearNodes(d) {
+  d.selected = 0;
+  if (d.children)
+    d.children.forEach(clearNodes);
+  else if (d._children)
+    d._children.forEach(clearNodes);
+}
+
+function searchChildren(d) {
+  d.selected = 0;
+  var patt = new RegExp("\\b"+this+"\\b", "i");
+  //if (d.name.toUpperCase().indexOf(this) >= 0) {
+  if (d.data.data.name.match(patt) != null) {
+    selected.push('#' + d.marker);
+    selection = selection + ', #' + d.marker;
+    d.selected = 1;
+    addToScope(d);
+  }
+
+  if (d.children)
+    d.children.forEach(searchChildren, this);
+  else if (d._children)
+    d._children.forEach(searchChildren, this);
+
+}
 </script>
 
 </body>
