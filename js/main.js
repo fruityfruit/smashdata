@@ -1,37 +1,7 @@
-var theData =
-    [
-      {"name": "*",   "parent": "", "winner": "MkLeo", "image": "img/lucina.png"},
-      {"name": "GF Winners",  "parent": "*", "winner": "VoiD", "image": "img/pichu.png"},
-      {"name": "GF Losers",  "parent": "*", "winner": "MkLeo", "image": "img/lucina.png"},
-      {"name": "WF P1",  "parent": "GF Winners", "winner": "VoiD", "image": "img/pichu.png"},
-      {"name": "WF P2",  "parent": "GF Winners", "winner": "Samsora", "image": "img/peach.png"},
-      {"name": "LF P1",  "parent": "GF Losers", "winner": "MkLeo", "image": "img/lucina.png"},
-      {"name": "LF P2",  "parent": "GF Losers", "winner": "Samsora", "image": "img/peach.png"},
-      {"name": "WS P1",  "parent": "WF P1", "winner": "VoiD", "image": "img/pichu.png"},
-      {"name": "WS P2",  "parent": "WF P1", "winner": "zackray", "image": "img/wolf.png"},
-      {"name": "WS P3",  "parent": "WF P2", "winner": "Samsora", "image": "img/peach.png"},
-      {"name": "WS P4",  "parent": "WF P2", "winner": "MkLeo", "image": "img/lucina.png"},
-      {"name": "LS P1",  "parent": "LF P1", "winner": "MkLeo", "image": "img/ike.png"},
-      {"name": "LS P2",  "parent": "LF P1", "winner": "Dabuz", "image": "img/olimar.png"},
-      {"name": "LQ P1",  "parent": "LS P1", "winner": "MkLeo", "image": "img/ike.png"},
-      {"name": "LQ P2",  "parent": "LS P1", "winner": "Light", "image": "img/fox.png"},
-      {"name": "LQ P3",  "parent": "LS P2", "winner": "zackray", "image": "img/wolf.png"},
-      {"name": "LQ P4",  "parent": "LS P2", "winner": "Dabuz", "image": "img/olimar.png"},
-      {"name": "WQ P1",  "parent": "WS P1", "winner": "VoiD", "image": "img/pichu.png"},
-      {"name": "WQ P2",  "parent": "WS P1", "winner": "ESAM", "image": "img/pika.png"},
-      {"name": "WQ P3",  "parent": "WS P2", "winner": "zackray", "image": "img/wolf.png"},
-      {"name": "WQ P4",  "parent": "WS P2", "winner": "Light", "image": "img/fox.png"},
-      {"name": "WQ P5",  "parent": "WS P3", "winner": "Cosmos", "image": "img/ink.png"},
-      {"name": "WQ P6",  "parent": "WS P3", "winner": "Samsora", "image": "img/peach.png"},
-      {"name": "WQ P7",  "parent": "WS P4", "winner": "MkLeo", "image": "img/ike.png"},
-      {"name": "WQ P8",  "parent": "WS P4", "winner": "Dabuz", "image": "img/olimar.png"},
-
-    ]
-
-var treeData = d3.stratify()
+/*var treeData = d3.stratify()
     .id(function(d) { return d.name; })
     .parentId(function(d) { return d.parent; })
-    (theData);
+    (theData);*/
 
 // Set the dimensions and margins of the diagram
 var margin = {top: 20, right: 90, bottom: 30, left: 0},
@@ -48,6 +18,12 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate("
           + margin.left + "," + margin.top + ")");
 
+    d3.json("data/data.json").then(function(theData) {
+      var treeData = d3.stratify()
+          .id(function(d) { return d.name; })
+          .parentId(function(d) { return d.parent; })
+          (theData);
+
 var i = 0,
     duration = 750,
     root;
@@ -60,9 +36,6 @@ root = d3.hierarchy(treeData, function(d) { return d.children; });
 root.x0 = 0;
 root.y0 = width/2;
 
-//var nodeList = treemap.nodes(root.children[0]);
-// Collapse after the second lGenesis 6l
-//root.children.forEach(collapse);
 root.marker = "i00";
 
 function collapse(d, index) {
@@ -109,17 +82,7 @@ var select = d3.select("#search-area")
     var filtered = flatten(root).filter(function(d){
       return d.data.data.winner == select;
     });
-    /*var find = flatten(root).find(function(d) {
-      if (d.data.data.winner == select)
-        return true;
-    });
-    doReset()
-    while (find.parent) {
-      find.color = "red";
-      find = find.parent;
-    }
 
-    update(find)*/
     doReset()
     var find = filtered.forEach(function(d){
       while(d.parent)
@@ -157,14 +120,6 @@ d3.select("#search-area").append("button")
 //root.children.forEach(collapse, root);
 update(root);
 
-// Collapse the node and all it's children
-// function collapse(d) {
-//   if(d.children) {
-//     d._children = d.children
-//     d._children.forEach(collapse)
-//     d.children = null
-//   }
-// }
 
 function update(source) {
 
@@ -336,66 +291,4 @@ function update(source) {
     update(d);
   }
 }
-
-function addToScope(d) {
-  var marker = '#' + d.marker;
-
-  if (scope.indexOf(marker) >= 0) return;
-  scope.push(marker);
-  if (d.parent == null) return;
-  addToScope(d.parent);
-}
-
-function generateMarker(index) {
-  if (index > 9)
-    return '' + index;
-  return '0'+index;
-}
-
-function search () {
-  var text = document.getElementById('searchField').value.toUpperCase();
-  document.getElementById('searching').innerHTML = 'Searching: ' +text;
-
-  //reset
-  selected = [];
-  scope = [];
-  selection = '#a';
-  filtered = true;
-  root.children.forEach(searchChildren, text);
-  document.getElementById('searching').innerHTML = 'Found: ' +selected.length;
-}
-
-function clearResult() {
-  filtered = false;
-  selected = [];
-  scope = [];
-  selection = '#a';
-  root.children.forEach(clearNodes);
-  document.getElementById('searching').innerHTML = '';
-}
-
-function clearNodes(d) {
-  d.selected = 0;
-  if (d.children)
-    d.children.forEach(clearNodes);
-  else if (d._children)
-    d._children.forEach(clearNodes);
-}
-
-function searchChildren(d) {
-  d.selected = 0;
-  var patt = new RegExp("\\b"+this+"\\b", "i");
-  //if (d.name.toUpperCase().indexOf(this) >= 0) {
-  if (d.data.data.winner.match(patt) != null) {
-    selected.push('#' + d.marker);
-    selection = selection + ', #' + d.marker;
-    d.selected = 1;
-    addToScope(d);
-  }
-
-  if (d.children)
-    d.children.forEach(searchChildren, this);
-  else if (d._children)
-    d._children.forEach(searchChildren, this);
-
-}
+});
